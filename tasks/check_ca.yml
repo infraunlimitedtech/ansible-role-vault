@@ -1,0 +1,26 @@
+---
+  - include_vars: "{{ infraunlimited_vault_admin_creds_file }}"
+    when: not lookup('env','VAULT_ADDR')
+
+  - set_fact:
+      address: "{{ lookup('env','VAULT_ADDR') | default(url, true) }}"
+    delegate_to: localhost
+
+  - debug:
+      msg: Use address {{ address }} for retrieving {{ vault_needed_ca }} CA"
+
+  - name: "(helpers/CA) Try to get CA cert for {{ vault_needed_ca }}"
+    uri:
+      url: "{{ address }}/v1/{{ vault_needed_ca }}/ca/pem"
+      return_content: yes
+      status_code: ['200', '204', '503']
+    register: vault_ca 
+    delegate_to: localhost
+
+  - set_fact:
+      vault_nedeed_ca_exists: true
+    when: vault_ca.status == 200
+
+  - set_fact:
+      vault_nedeed_ca_exists: false
+    when: vault_ca.status in [204, 503]

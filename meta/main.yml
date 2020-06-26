@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: Spigell 7th
+  description: Install/manage Hashicorp Vault
+  company: InfraUnlimited
+
+  license: BSD
+
+  min_ansible_version: 1.2
+
+  platforms:
+  - name: EL
+    versions:
+    - all
+
+  galaxy_tags: []
+
+dependencies: []

@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  vars_files:
+    - '../../vars/brianshumate.vault.yml'
+    - '../common/vars/main.yml'
+  roles:
+    - role: ansible-role-vault

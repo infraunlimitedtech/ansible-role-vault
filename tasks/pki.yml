@@ -1,0 +1,57 @@
+---
+- block:
+  - name: "(PKI) Enable PKI backends"
+    hashivault_secret_engine:
+      backend: pki
+      name: "{{ item.value.mount_point }}"
+      description: "{{ item.value.description }}"
+      state: enabled
+      config:
+        max_lease_ttl: 157680000 # 5 years 
+        default_lease_ttl: 31536000 # 1 year
+    with_dict: "{{ infraunlimited_vault_pki.ca }}"
+    changed_when: false
+    loop_control:
+      label: "{{ item.value.description }}"
+
+  - name: "(PKI) Configure urls for PKI backends"
+    hashivault_write:
+      mount_point: "{{ item.value.mount_point }}"
+      secret: 'config/urls'
+      data:
+        issuing_certificates: "{{ infraunlimited_vault_pki.address }}/v1/{{ item.value.mount_point }}/ca"
+        crl_distribution_points: "{{ infraunlimited_vault_pki.address }}/v1/{{ item.value.mount_point }}/crl"
+    with_dict: "{{ infraunlimited_vault_pki.ca }}"
+    changed_when: false
+    loop_control:
+      label: "{{ item.value.description }}"
+
+  - name: "(PKI) Create signer role for PKI Backends"
+    hashivault_write:
+      mount_point: "{{ item.value.mount_point }}"
+      secret: "roles/{{ item.value.signer_role }}"
+      data:
+        allowed_domains: "{{ item.value.domain }}"
+        allow_subdomains: true
+        allow_ip_sans: true
+        allow_localhost: false
+        allow_any_name: "{{ item.value.allow_any_name | default(omit) }}"
+        max_ttl: '8760h'
+        ttl: '8760h'
+    with_dict: "{{ infraunlimited_vault_pki.ca }}"
+    changed_when: false
+    loop_control:
+      label: "{{ item.value.description }}"
+
+  - set_fact:
+      vault_needed_ca: "{{ infraunlimited_vault_pki.ca.root.mount_point }}"
+
+  - import_tasks: check_ca.yml
+
+  - import_tasks: create_root_ca.yml
+    when: not vault_nedeed_ca_exists
+
+  - include_tasks: create_ca.yml
+    with_dict: "{{ infraunlimited_vault_pki.ca }}"
+
+  delegate_to: localhost

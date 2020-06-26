@@ -1,0 +1,24 @@
+.terraform
+terraform*
+*.retry
+*sublime-workspace
+*vagrant/
+.venv
+misc/openvpn/*
+dh.pem
+ta.key
+modules/*
+creds.yml
+admin.conf
+credentials
+
+# Testinfra
+pytestdebug.log
+
+# Cache
+__pycache__
+*tmp*
+
+*/*/examples/roles/
+examples/roles/
+

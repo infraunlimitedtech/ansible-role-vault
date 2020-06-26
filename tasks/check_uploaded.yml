@@ -1,0 +1,19 @@
+---
+  - name: "(helper/checking) Get list of secretes in {{ vault_mount_point }}/{{ vault_secret_directory }} already uploaded"
+    hashivault_list:
+      mount_point: "{{ vault_mount_point }}"
+      secret: "{{ vault_secret_directory }}/"
+      version: "{{ vault_version }}"
+    register: vault_secrets
+    delegate_to: localhost
+
+  - name: "(helper/checking) did secret {{ vault_secret_name }} founded?"
+    set_fact:
+      vault_secret_uploaded: true
+    when: vault_secret_name in vault_secrets.secrets
+    delegate_to: localhost
+
+  - set_fact:
+      vault_secret_uploaded: false
+    when: not vault_secret_name in vault_secrets.secrets
+    delegate_to: localhost

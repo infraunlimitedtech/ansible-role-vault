@@ -1,0 +1,30 @@
+---
+dependency:
+  name: galaxy
+  options:
+    role-file: requirements.yml
+driver:
+  name: docker
+lint:
+  name: yamllint
+platforms:
+  - name: centos
+    pre_build_image: true
+    image: centos/systemd
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    command: '/usr/sbin/init'
+    published_ports:
+      - '127.0.0.1:8200:8200/tcp'
+provisioner:
+  name: ansible
+  env:
+    VAULT_ADDR: http://127.0.0.1:8200
+  lint:
+    name: ansible-lint
+    enabled: False
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

@@ -1,0 +1,35 @@
+---
+# defaults file for infraunlimited.vault
+
+infraunlimited_vault_creds_file: '/tmp/vault_core_creds.yml'
+infraunlimited_vault_admin_password: 'password'
+infraunlimited_vault_admin_name: 'admin'
+infraunlimited_vault_admin_creds_file: '/tmp/vault_admin_creds.yml'
+infraunlimited_vault_admin_policy_file: 'files/admin-policy.hcl'
+
+infraunlimited_vault_ca: intfa
+infraunlimited_vault_ou: 'Ops team'
+infraunlimited_vault_organization: Infra
+infraunlimited_vault_cert_ttl: '8760h'
+
+infraunlimited_vault_secret:
+  engines:
+    infra:
+      description: Infra secrets
+      mount_point: secret_infra
+      version: '2'
+
+infraunlimited_vault_pki:
+  address: 'https://vault.infra.local'
+  ca:
+    root:
+      domain: 'root.local'
+      signer_role: signer
+      mount_point: pki_root
+      description: ROOT CA
+    infra:
+      signer_role: signer
+      domain: 'infra.local'
+      mount_point: pki_infra
+      secret_backend: infra
+      description: Int CA

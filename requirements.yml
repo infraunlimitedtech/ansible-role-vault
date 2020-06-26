@@ -1,0 +1,4 @@
+# Roles
+- name: brianshumate.vault
+  src: https://github.com/ansible-community/ansible-vault
+  version: v2.5.3
