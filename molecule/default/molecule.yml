@@ -9,8 +9,7 @@ lint:
   name: yamllint
 platforms:
   - name: centos
-    pre_build_image: true
-    image: centos/systemd
+    image: jrei/systemd-centos:7
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
@@ -23,7 +22,7 @@ provisioner:
     VAULT_ADDR: http://127.0.0.1:8200
   lint:
     name: ansible-lint
-    enabled: False
+    enabled: false
 verifier:
   name: testinfra
   lint:

@@ -17,7 +17,6 @@ class ActionModule(ActionBase):
         creds_file = t.render(task_vars)
 
         if not os.path.exists(creds_file):
-            print(creds_file)
             self._display.warning('Can not find file with admin creds - %s. If next operations failed please check it first' % creds_file)
             args = self._task.args.copy()
             result.update(self._execute_module(module_args=args, task_vars=task_vars))
