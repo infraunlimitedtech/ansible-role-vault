@@ -4,7 +4,6 @@ stages:
 before_script:
   - docker -v
   - docker info
-  - python -V
   - ansible --version
   - molecule --version
   - pip install -r requirements.txt
