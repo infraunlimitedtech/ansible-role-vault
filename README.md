@@ -1,52 +1,36 @@
 Vault
 =========
-
-Requirements
-------------
-
-Vault after deploy needed to be initialized.
-```
-VAULT_ADDR=http://127.0.0.1:8200 ansible-playbook ./misc/vault/init/bootstrap.yml -e 'vault_admin_password=password'
-```
-VAULT_ADDR=http://127.0.0.1:8200 vault login -method=userpass username=spigell
-VAULT_ADDR=http://127.0.0.1:8200 vault write auth/userpass/users/spigell password=adsfasfffawfaf
-
-
-ansible-playbook ./misc/vault/pki/create-int-ca.yml -e 'ca=openvpn'
-
-ansible-playbook ./misc/vault/openvpn/openvpn-secret.yml
-
+This role is wrapper for `ansible-community.ansible-vault` role with some tasks for initial setup. It can be used for:
+* init and unseal vault after initial installation (bootstrap phase)
+* enable initial user with `userpass_auth` (bootstrap phase)
+* setup secrets/PKI engines
+* setup file based audit device
 
 Role Variables
 --------------
-
-Much hardcoded
+Please see `defaults/main.yml` for all avaliable variables
 
 Dependencies
 ------------
+* ansible >= 2.9
 
-roles
+**roles**
+* ansible-community.ansible-vault
 
-brianshumate.vault
-
-modules
-
-ansible-modules-hashivault
+**modules**
+* ansible-modules-hashivault == 4.6.3
 
 
 Example Playbook
 ----------------
-
 - hosts: all
   roles:
-    - { role: infraunlimited.vault, tags: vault }
+    - infraunlimited.vault
 
 License
 -------
-
 BSD
 
 Author Information
 ------------------
-
 Infra Unlimited

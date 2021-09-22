@@ -1,7 +1,6 @@
 ---
-
 - name: Enable audit file device
-  hashivault_audit_enable:
-    name: 'file'
+  hashivault_audit:
+    device_type: 'file'
     options:
       file_path: '/var/log/vault/audit.log'

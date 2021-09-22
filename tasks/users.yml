@@ -1,8 +1,0 @@
----
-  # spigell
-- name: Create spigell user
-  hashivault_userpass:
-    name: spigell
-    pass_update: no
-    pass: "{{ lookup('password', '/tmp/spigell.key chars=ascii_letters') }}"
-    policies: 'administrator'

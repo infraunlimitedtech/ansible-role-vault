@@ -1,18 +1,20 @@
 ---
-  - include_role:
+  - import_role:
       name: brianshumate.vault
+    when: infraunlimited_vault_install
 
   - import_tasks: bootstrap.yml
     delegate_to: localhost
+    when: infraunlimited_vault_bootstrap
 
   - import_tasks: audit.yml
     delegate_to: localhost
-
-  - import_tasks: users.yml
-    delegate_to: localhost
+    when: infraunlimited_vault_audit
 
   - import_tasks: secrets.yml
+    delegate_to: localhost
     when: infraunlimited_vault_secret is defined
 
   - import_tasks: pki.yml
+    delegate_to: localhost
     when: infraunlimited_vault_pki is defined

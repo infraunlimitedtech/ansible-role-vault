@@ -1,38 +1,38 @@
 ---
-  - set_fact:
-      creds_file: "{{ infraunlimited_vault_creds_file }}"
-
   - name: (Check) Vault status
     hashivault_status:
-      url: "{{ lookup('env','VAULT_ADDR') }}"
-    register: 'vault_status'
+    register: vault_status
 
   - block:
 
-    - name: Init Vault
+    - name: (Bootstrap) Init Vault
       hashivault_init:
-      register: 'vault_init'
+      register: vault_init
 
-    - set_fact:
-        creds: 
+    - name: (Bootstrap) Extract creds from inited Vault
+      set_fact:
+        creds:
           keys: "{{ vault_init['keys'] }}"
           keys_base_64: "{{ vault_init.keys_base64 }}"
           root_token: "{{ vault_init.root_token }}"
 
-    - name: "Dump token and keys to file {{ creds_file }}. Please move it to safe place!"
+    - name: "(Bootstrap) Dump token and keys to file {{ infraunlimited_vault_bootstrap_root_creds_file }}. Please move it to safe place!"
+      no_log: true
       copy:
         content: "{{ creds | to_nice_yaml }}"
-        dest: "{{ creds_file }}"
-    when: vault_status.status.initialized == false
+        dest: "{{ infraunlimited_vault_bootstrap_root_creds_dest }}"
+        mode: '0600'
+
+    when: not vault_status.status.initialized
 
   - block:
 
-    - name: load creds
+    - name: (Bootstrap) Load creds
       include_vars:
-        file: "{{ creds_file }}"
+        file: "{{ infraunlimited_vault_bootstrap_root_creds_dest }}"
         name: creds
 
-    - name: unseal Vault
+    - name: (Bootstrap) Unseal Vault
       hashivault_unseal:
         keys: "{{ creds['keys'] | join(' ') }}"
 
@@ -40,46 +40,49 @@
 
   - block:
 
-    - name: Load creds
+    - name: (Bootstrap) Load root creds
       include_vars:
-        file: "{{ creds_file }}"
+        file: "{{ infraunlimited_vault_bootstrap_root_creds_dest }}"
         name: creds
 
-    - name: Enable userpass auth
+    - name: (Bootstrap) Enable userpass auth
       hashivault_auth_method:
         authtype: token
         method_type: userpass
         token: "{{ creds['root_token'] }}"
-        config:
-          max_lease_ttl: 3600
-          default_lease_ttl: 3600
+        config: "{{ infraunlimited_vault_bootstrap_userpass_config }}"
 
-    - name: Create Admin Policy
-      hashivault_policy_set_from_file:
-        authtype: token
+    - name: (Bootstrap) Create Admin policy
+      hashivault_policy:
         name: administrator
-        rules_file: "{{ infraunlimited_vault_admin_policy_file }}"
+        state: present
+        rules_file: "{{ infraunlimited_vault_bootstrap_admin_policy_file }}"
+        authtype: token
         token: "{{ creds['root_token'] }}"
 
-    - name: Create Admin user
+    - name: (Bootstrap) Create Admin user
+      no_log: true
       hashivault_userpass:
-        url: "{{ lookup('env','VAULT_ADDR') }}"
-        name: "{{ infraunlimited_vault_admin_name }}"
+        name: "{{ infraunlimited_vault_bootstrap_admin_name }}"
         authtype: token
-        pass_update: yes
-        pass: "{{ infraunlimited_vault_admin_password }}"
+        pass: "{{ infraunlimited_vault_bootstrap_admin_password }}"
         policies: 'administrator'
         token: "{{ creds['root_token'] }}"
 
-    - set_fact:
+    - name: (Bootstrap) Genereate Admin user credentials dict
+      no_log: true
+      set_fact:
         admin_creds:
           url: "{{ lookup('env','VAULT_ADDR') }}"
-          user: "{{ infraunlimited_vault_admin_name }}"
-          password: "{{ infraunlimited_vault_admin_password }}"
+          user: "{{ infraunlimited_vault_bootstrap_admin_name }}"
+          password: "{{ infraunlimited_vault_bootstrap_admin_password }}"
 
-    - name: (Bootstrap) Create admin user creds file
+    - name: "(Bootstrap) Render Admin user creds file to {{ infraunlimited_vault_bootstrap_admin_creds_file_dest }}"
+      no_log: true
       copy:
         content: "{{ admin_creds | to_nice_yaml }}"
-        dest: "{{ infraunlimited_vault_admin_creds_file }}"
-
-    when: vault_status.status.initialized == false
+        dest: "{{ infraunlimited_vault_bootstrap_admin_creds_file_dest }}"
+        mode: '0600'
+    when:
+      - infraunlimited_vault_bootstrap_create_admin
+      - not vault_status.status.initialized

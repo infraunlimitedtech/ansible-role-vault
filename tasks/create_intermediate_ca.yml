@@ -1,17 +1,19 @@
 ---
-  - set_fact:
-      vault_needed_ca: "{{ item.value.mount_point }}"
+  - name: (PKI) Determine target CA
+    set_fact:
+      vault_needed_ca: "{{ item.mount_point }}"
 
   - import_tasks: check_ca.yml
 
   - block:
+
 
     - name: (PKI) Generate int CA csr
       hashivault_write:
         mount_point: "{{ vault_needed_ca }}"
         secret: 'intermediate/generate/internal'
         data:
-          common_name: "{{ item.value.description }}"
+          common_name: "{{ item.description }}"
           organization: "{{ infraunlimited_vault_organization }}"
           ou: "{{ infraunlimited_vault_ou }}"
           ttl: '1h'
@@ -27,8 +29,8 @@
         secret: 'root/sign-intermediate'
         data:
           csr: "{{ ca_csr.data.data.csr }}"
-          ttl: '17520h' # 2 years
-          common_name: "{{ item.value.description }}"
+          ttl: "{{ item.ttl | default ('17520h') }}"
+          common_name: "{{ item.description }}"
           organization: "{{ infraunlimited_vault_organization }}"
           ou: "{{ infraunlimited_vault_ou }}"
       register: ca_signed
@@ -37,12 +39,13 @@
       debug:
         msg: "{{ ca_signed }}"
 
-    - name: (PKI) Set signed 
+    - name: (PKI) Set signed
       hashivault_write:
         mount_point: "{{ vault_needed_ca }}"
         secret: 'intermediate/set-signed'
         data:
           certificate: "{{ ca_signed.data.data.certificate }}"
       register: ca_done
+
 
     when: not vault_nedeed_ca_exists

@@ -1,1 +1,2 @@
-ansible-modules-hashivault==4.5.1
+# Latest version with ansible < 4 support
+ansible-modules-hashivault==4.6.3

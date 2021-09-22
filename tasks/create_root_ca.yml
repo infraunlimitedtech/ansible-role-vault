@@ -1,5 +1,5 @@
 ---
-  - name: Generate root CA
+  - name: (PKI) Generate root CA
     hashivault_write:
       mount_point: "{{ infraunlimited_vault_pki.ca.root.mount_point }}"
       secret: 'root/generate/internal'
@@ -7,4 +7,4 @@
         common_name: "{{ infraunlimited_vault_pki.ca.root.description }}"
         organization: "{{ infraunlimited_vault_organization }}"
         ou: "{{ infraunlimited_vault_ou }}"
-        ttl: '87600h' # 5 years
+        ttl: "{{ infraunlimited_vault_pki.ca.root.ttl }}"

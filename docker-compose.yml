@@ -1,0 +1,22 @@
+---
+version: '3'
+
+x-defaults: &defaults
+  working_dir: /ansible-role-vault
+  command: sh -c "pip install -r requirements.txt && sleep infinity"
+  volumes:
+    - ./:/ansible-role-vault
+    - /var/run/docker.sock:/var/run/docker.sock
+
+services:
+  ansible-4:
+    image: leandelivery/docker-ansible-ci:ansible-4
+    <<: *defaults
+
+  ansible-3:
+    image: leandelivery/docker-ansible-ci:ansible-3
+    <<: *defaults
+
+  ansible-29:
+    image: leandelivery/docker-ansible-ci:ansible-2.9
+    <<: *defaults

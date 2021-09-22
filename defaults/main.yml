@@ -1,16 +1,26 @@
 ---
 # defaults file for infraunlimited.vault
 
-infraunlimited_vault_creds_file: '/tmp/vault_core_creds.yml'
-infraunlimited_vault_admin_password: 'password'
-infraunlimited_vault_admin_name: 'admin'
-infraunlimited_vault_admin_creds_file: '/tmp/vault_admin_creds.yml'
-infraunlimited_vault_admin_policy_file: 'files/admin-policy.hcl'
+infraunlimited_vault_install: true
+
+infraunlimited_vault_admin_creds_file: /tmp/vault_admin_creds.yml
+infraunlimited_vault_bootstrap: true
+infraunlimited_vault_bootstrap_root_creds_dest: /tmp/vault_root_creds.yml
+infraunlimited_vault_bootstrap_create_admin: true
+infraunlimited_vault_bootstrap_admin_name: admin
+infraunlimited_vault_bootstrap_admin_password: password
+infraunlimited_vault_bootstrap_admin_creds_file_dest: "{{ infraunlimited_vault_admin_creds_file }}"
+infraunlimited_vault_bootstrap_admin_policy_file: files/admin-policy.hcl
+
+infraunlimited_vault_bootstrap_userpass_config:
+  max_lease_ttl: 3600
+  default_lease_ttl: 3600
+
+infraunlimited_vault_audit: true
 
 infraunlimited_vault_ca: intfa
-infraunlimited_vault_ou: 'Ops team'
+infraunlimited_vault_ou: Ops team
 infraunlimited_vault_organization: Infra
-infraunlimited_vault_cert_ttl: '8760h'
 
 infraunlimited_vault_secret:
   engines:
@@ -18,18 +28,23 @@ infraunlimited_vault_secret:
       description: Infra secrets
       mount_point: secret_infra
       version: '2'
+      config:
+        max_lease_ttl: 157680000 # 5 years
+        default_lease_ttl: 31536000 # 1 year
 
 infraunlimited_vault_pki:
   address: 'https://vault.infra.local'
   ca:
     root:
-      domain: 'root.local'
       signer_role: signer
+      domain: 'root.local'
       mount_point: pki_root
       description: ROOT CA
-    infra:
-      signer_role: signer
-      domain: 'infra.local'
-      mount_point: pki_infra
-      secret_backend: infra
-      description: Int CA
+      ttl: '87600h' # 5 years
+    intermediate:
+      - signer_role: signer
+        domain: 'infra.local'
+        mount_point: pki_infra
+        secret_backend: infra
+        description: Int CA
+        ttl: '87600h' # 5 years

@@ -1,0 +1,34 @@
+---
+  - name: "(PKI) Enable PKI backends"
+    hashivault_secret_engine:
+      backend: pki
+      name: "{{ item.mount_point }}"
+      description: "{{ item.description }}"
+      state: enabled
+      config:
+        max_lease_ttl: 157680000 # 5 years
+        default_lease_ttl: 31536000 # 1 year
+    changed_when: false
+
+  - name: "(PKI) Configure urls for PKI backends"
+    hashivault_write:
+      mount_point: "{{ item.mount_point }}"
+      secret: 'config/urls'
+      data:
+        issuing_certificates: "{{ infraunlimited_vault_pki.address }}/v1/{{ item.mount_point }}/ca"
+        crl_distribution_points: "{{ infraunlimited_vault_pki.address }}/v1/{{ item.mount_point }}/crl"
+    changed_when: false
+
+  - name: "(PKI) Create signer role for PKI Backends"
+    hashivault_write:
+      mount_point: "{{ item.mount_point }}"
+      secret: "roles/{{ item.signer_role }}"
+      data:
+        allowed_domains: "{{ item.domain }}"
+        allow_subdomains: true
+        allow_ip_sans: true
+        allow_localhost: false
+        allow_any_name: "{{ item.allow_any_name | default(omit) }}"
+        max_ttl: '8760h'
+        ttl: '8760h'
+    changed_when: false
