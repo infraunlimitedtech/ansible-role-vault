@@ -1,0 +1,14 @@
+---
+- name: Verify
+  hosts: localhost
+  tasks:
+
+  - name: (Verify) Vault status
+    hashivault_status:
+    register: vault_status
+
+  - name: (Verify) Check if Vault initialized
+    assert:
+      that:
+        - vault_status.status.initialized
+      fail_msg: Vault is not initialized

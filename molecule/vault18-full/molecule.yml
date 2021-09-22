@@ -1,8 +1,8 @@
 ---
 
-.container_name: &container_name ${HOSTNAME}-centos7-default
-.network_name: &network_name ${HOSTNAME}-network-default
-.vault_addr: &vault_addr http://${HOSTNAME}-centos7-default:8200
+.container_name: &container_name ${HOSTNAME}-centos7-vault18-full
+.network_name: &network_name ${HOSTNAME}-network-vault18-full
+.vault_addr: &vault_addr http://${HOSTNAME}-centos7-vault18-full:8200
 
 dependency:
   name: galaxy

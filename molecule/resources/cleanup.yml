@@ -1,0 +1,9 @@
+---
+- name: Cleanup
+  hosts: localhost
+  tasks:
+  - file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+    - /tmp/vault_admin_creds.yml

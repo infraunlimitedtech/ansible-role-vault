@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  vars_files:
+    - '../resources/vars/main.yml'
+  vars:
+    - vault_version: 1.7.4
+  roles:
+    - role: ansible-role-vault

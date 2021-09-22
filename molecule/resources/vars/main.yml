@@ -1,0 +1,10 @@
+---
+# Default vars for brianshumate.vault for Infraunlimited CI (molecule)
+# https://github.com/ansible/ansible/issues/39684
+# We do not use defaults vars since it makes no sense
+# But we can't use vars/main.yml because it brokes vars precedence
+vault_install_remotely: true
+vault_cluster_disable: true
+vault_backend: file
+# Defaults for infraunlimited vault role
+infraunlimited_vault_bootstrap_admin_policy_file: '../../files/admin-policy.hcl'

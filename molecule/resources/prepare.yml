@@ -1,0 +1,10 @@
+---
+- name: Prepare
+  hosts: localhost
+  tasks:
+  - name: Attach to target network
+    docker_network:
+      name: "{{ lookup('env', 'NETWORK') }}"
+      connected:
+        - "{{ lookup('env', 'TARGET_HOSTNAME') }}"
+        - "{{ ansible_hostname }}"
