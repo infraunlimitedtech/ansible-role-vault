@@ -10,13 +10,16 @@ x-defaults: &defaults
 
 services:
   ansible-4:
+    hostname: ansible4
     image: leandelivery/docker-ansible-ci:ansible-4
     <<: *defaults
 
   ansible-3:
+    hostname: ansible3
     image: leandelivery/docker-ansible-ci:ansible-3
     <<: *defaults
 
   ansible-29:
+    hostname: ansible29
     image: leandelivery/docker-ansible-ci:ansible-2.9
     <<: *defaults
