@@ -6,7 +6,7 @@
   # Dirty hack
   - name: Read cpuset to findout my own container id
     shell:
-      cmd: 'cat /proc/1/cgroup | grep "docker/" | tail -1 | sed "s/^.*\///" | cut -c 1-12'
+      cmd: 'cat /proc/1/cpuset | grep docker | tail -1 | sed "s/^.*\///" | tr -d "-" | sed "s/docker//" | cut -c 1-12'
     register: readed
 
   - name: Attach to target network
