@@ -3,14 +3,9 @@
   hosts: localhost
   gather_facts: false
   tasks:
-  - name: Read cpuset to findout my own container id
-    ansible.builtin.slurp:
-      src: /proc/1/cpuset
-    register: readed
-
   - name: Attach to target network
     docker_network:
       name: "{{ lookup('env', 'NETWORK') }}"
+      appends: true
       connected:
         - "{{ lookup('env', 'TARGET_HOSTNAME') }}"
-        - "{{ readed['content'] | b64decode | basename | trim }}"
