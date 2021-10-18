@@ -2,9 +2,10 @@
 - name: Verify
   hosts: localhost
   gather_facts: false
+  vars_files:
+    - ../../defaults/main.yml
   tasks:
-
-  - name: (Verify) Vault status
+  - name: (Verify) Get Vault status
     hashivault_status:
     register: vault_status
 
@@ -13,3 +14,11 @@
       that:
         - vault_status.status.initialized
       fail_msg: Vault is not initialized
+
+  - name: (Verify) Can write secret (with config)
+    hashivault_write:
+      mount_point: secret_infra
+      secret: secret1
+      version: 2
+      data:
+        msg: "with config"

@@ -16,7 +16,7 @@
           keys_base_64: "{{ vault_init.keys_base64 }}"
           root_token: "{{ vault_init.root_token }}"
 
-    - name: "(Bootstrap) Dump token and keys to file {{ infraunlimited_vault_bootstrap_root_creds_file }}. Please move it to safe place!"
+    - name: "(Bootstrap) Dump token and keys to file {{ infraunlimited_vault_bootstrap_root_creds_dest }}. Please move it to safe place!"
       no_log: true
       copy:
         content: "{{ creds | to_nice_yaml }}"

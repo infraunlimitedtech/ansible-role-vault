@@ -47,4 +47,4 @@ infraunlimited_vault_pki:
         mount_point: pki_infra
         secret_backend: infra
         description: Int CA
-        ttl: '87600h' # 5 years
+        ttl: '17532h' # 2 years
