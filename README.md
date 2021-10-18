@@ -20,6 +20,12 @@ Dependencies
 **modules**
 * ansible-modules-hashivault == 4.6.3
 
+Testing
+-------
+This role tested against three version Vault on centos7 node via Molecule:
+* default: default version of ansible-community.ansible-vault
+* vault17-full: vault 1.7.x
+* vault18-full: vault 1.8.x
 
 Example Playbook
 ----------------
