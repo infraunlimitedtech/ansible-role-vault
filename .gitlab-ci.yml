@@ -25,7 +25,7 @@ ansible-3:
 
 ansible-29:
   extends: .molecule-default
-  image: leandelivery/docker-ansible-ci:ansible-29
+  image: leandelivery/docker-ansible-ci:ansible-2.9
 
 ansible-4:
   extends: .molecule-default
