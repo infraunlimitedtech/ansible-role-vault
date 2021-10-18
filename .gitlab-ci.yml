@@ -22,3 +22,11 @@ before_script:
 ansible-3:
   extends: .molecule-default
   image: leandelivery/docker-ansible-ci:ansible-3
+
+ansible-29:
+  extends: .molecule-default
+  image: leandelivery/docker-ansible-ci:ansible-29
+
+ansible-4:
+  extends: .molecule-default
+  image: leandelivery/docker-ansible-ci:ansible-4
