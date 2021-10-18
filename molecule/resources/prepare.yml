@@ -3,9 +3,15 @@
   hosts: localhost
   gather_facts: false
   tasks:
+  # Dirty hack
+  - name: Read cpuset to findout my own container id
+    shell:
+      cmd: 'cat /proc/1/cgroup | grep "docker/" | tail -1 | sed "s/^.*\///" | cut -c 1-12'
+    register: readed
+
   - name: Attach to target network
     docker_network:
       name: "{{ lookup('env', 'NETWORK') }}"
       appends: true
       connected:
-        - "{{ lookup('env', 'TARGET_HOSTNAME') }}"
+        - "{{ readed.stdout }}"

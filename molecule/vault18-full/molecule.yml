@@ -24,7 +24,6 @@ platforms:
 provisioner:
   name: ansible
   env:
-    TARGET_HOSTNAME: *container_name
     NETWORK: *network_name
     VAULT_ADDR: *vault_addr
   playbooks:
