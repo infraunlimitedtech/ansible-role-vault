@@ -3,8 +3,13 @@ version: '3'
 
 x-defaults: &defaults
   working_dir: /ansible-role-vault
-  #command: sh -c "pip install -r requirements.txt && sleep infinity"
-  command: sh -c "pip install -r requirements.txt && molecule test --all"
+  command: sh -c \
+    'if [[ $MOLECULE ]];
+      then
+        sh -c "pip install -r requirements.txt && molecule test --all";
+      else
+        sh -c "pip install -r requirements.txt && sleep infinity";
+    fi'
   volumes:
     - ./:/ansible-role-vault
     - /var/run/docker.sock:/var/run/docker.sock

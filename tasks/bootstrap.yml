@@ -18,6 +18,7 @@
 
     - name: "(Bootstrap) Dump token and keys to file {{ infraunlimited_vault_bootstrap_root_creds_dest }}. Please move it to safe place!"
       no_log: true
+      become: no
       copy:
         content: "{{ creds | to_nice_yaml }}"
         dest: "{{ infraunlimited_vault_bootstrap_root_creds_dest }}"
@@ -79,6 +80,7 @@
 
     - name: "(Bootstrap) Render Admin user creds file to {{ infraunlimited_vault_bootstrap_admin_creds_file_dest }}"
       no_log: true
+      become: no
       copy:
         content: "{{ admin_creds | to_nice_yaml }}"
         dest: "{{ infraunlimited_vault_bootstrap_admin_creds_file_dest }}"

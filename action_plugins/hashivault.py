@@ -1,4 +1,5 @@
 from ansible.plugins.action import ActionBase
+from jinja2 import Template
 import yaml
 import os.path
 
@@ -9,10 +10,13 @@ class ActionModule(ActionBase):
 
         if task_vars is None:
             task_vars = dict()
-            
+
         result = super(ActionModule, self).run(tmp, task_vars)
 
-        creds_file = task_vars['infraunlimited_vault_admin_creds_file']
+        creds_filename_tmpl = task_vars['infraunlimited_vault_admin_creds_file']
+        t = Template(creds_filename_tmpl)
+        creds_file = t.render(task_vars)
+
 
         if not os.path.exists(creds_file):
             args = self._task.args.copy()
