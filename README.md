@@ -1,5 +1,9 @@
 Vault
 =========
+
+[![Build Status](https://gitlab.infraunlimited.tech/infraOps/ansible/ansible-role-vault/badges/master/pipeline.svg)](https://gitlab.infraunlimited.tech/infraOps/ansible/ansible-role-vault/-/pipelines)
+[![Ansible Role](https://img.shields.io/badge/ansible--galaxy-infraunlimitedbot.ansible__role__vault-blue)](https://galaxy.ansible.com/infraunlimitedbot/ansible_role_vault)
+
 This role is wrapper for `ansible-community.ansible-vault` role with some tasks for initial setup. It can be used for:
 * init and unseal vault after initial installation (bootstrap phase)
 * enable initial user with `userpass_auth` (bootstrap phase)
